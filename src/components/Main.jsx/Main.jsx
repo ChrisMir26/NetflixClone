@@ -5,14 +5,14 @@ import request from "../../Requests";
 const Main = () => {
   const [movies, setMovies] = useState([]);
 
-  const movie = movies[Math.floor(Math.random() * movies.length)];
+  const movie = movies.length > 0 ? movies[Math.floor(Math.random() * movies?.length)] : null;
 
   useEffect(() => {
     fetch(request.popular)
       .then((res) => res.json())
       .then((data) => {
-        setMovies(data.results);
-
+        setMovies(data?.results);
+          
       });
   }, []);
   const truncateString = (str,num) =>{
