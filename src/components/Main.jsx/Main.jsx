@@ -12,9 +12,9 @@ const Main = () => {
       .then((res) => res.json())
       .then((data) => {
         setMovies(data.results);
+
       });
   }, []);
-
   const truncateString = (str,num) =>{
         if(str?.length > num){
             return str.slice(0,num) + "..."
