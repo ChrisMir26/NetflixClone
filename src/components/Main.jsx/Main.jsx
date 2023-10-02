@@ -7,6 +7,7 @@ const Main = () => {
 
   const movie = movies.length > 0 ? movies[Math.floor(Math.random() * movies?.length)] : null;
 
+
   useEffect(() => {
     fetch(request.popular)
       .then((res) => res.json())

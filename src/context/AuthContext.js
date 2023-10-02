@@ -7,27 +7,68 @@ import {
   onAuthStateChanged,
   signOut,
 } from "firebase/auth";
-import {setDoc,doc} from "firebase/firestore"
+import {setDoc,doc,getDoc,addDoc,collection} from "firebase/firestore"
+import request from "../Requests.js"
 
 const AuthContext = createContext();
 
 export function AuthContextProvider({ children }) {
 
     const [user,setUser] = useState()
+    const [authChecked, setAuthChecked] = useState(false);
+    const [allMovies, setAllMovies] = useState([])
 
-    function signUp(email,password){
-       createUserWithEmailAndPassword(auth,email,password)
-       setDoc(doc(db,"users",email),{
-        saveShows:[]
-       })
+    useEffect(() => {
+      const fetchingAllMovies = async () => {
+          var moviesResults = [];
+          
+          for (const urlKey in request) {
+              const url = request[urlKey];
+              
+              try {
+                  const response = await fetch(url);
+                  if (!response.ok) throw new Error(`Failed to fetch ${urlKey}`);
+                  
+                  const data = await response.json();
+                  if (data.results) moviesResults.push(...data.results);
+              } catch (error) {
+                  console.error("Failed to fetch movies", error);
+              }
+          }
+          
+          setAllMovies(moviesResults);
+          console.log(allMovies);
+      };
+      
+      fetchingAllMovies();
+  }, [])
+  
+
+ 
+
+
+    function signUp(email, password) {
+      createUserWithEmailAndPassword(auth, email, password)
+        .then((userCredential) => {
+          const currentUser = userCredential.user;
+          console.log(`soy current user`, currentUser)
+          setUser(currentUser); // Almacena el usuario en el estado
+          localStorage.setItem("user", JSON.stringify(currentUser)); // Guarda el usuario en localStorage
+          setDoc(doc(db, "users", email), {
+            savedShows: [],
+          });
+        })
+        .catch((error) => {
+          console.error("Error al registrarse:", error);
+        });
     }
-
     function logIn(email,password){
       return (signInWithEmailAndPassword(auth,email,password))
     }
 
     function logOut(){
-      return signOut(auth )
+      signOut(auth )
+      return localStorage.removeItem("user")
     }
 
     useEffect(()=>{
@@ -39,8 +80,20 @@ export function AuthContextProvider({ children }) {
       }
     },[])
 
+    const fetchSavedShows = async (userEmail) => {
+      const userDocRef = doc(db, "users", userEmail);
+      const userDocSnapshot = await getDoc(userDocRef);
+    
+      if (userDocSnapshot.exists()) {
+        const userData = userDocSnapshot.data();
+        return userData.savedShows || [];
+      }
+    
+      return [];
+    };
   return(
-     <AuthContext.Provider value={{signUp, logIn,logOut,user}} >
+     <AuthContext.Provider value={{
+      signUp, logIn,logOut,user,authChecked,setAuthChecked,fetchSavedShows,allMovies}} >
         {children}
      </AuthContext.Provider>
      )
