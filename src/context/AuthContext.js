@@ -57,10 +57,12 @@ export function AuthContextProvider({ children }) {
           setDoc(doc(db, "users", email), {
             savedShows: [],
           });
+          
         })
         .catch((error) => {
-          console.error("Error al registrarse:", error);
-        });
+          console.error("Error code:", error.code);
+          console.error("Error message:", error.message);
+      });
     }
     function logIn(email,password){
       return (signInWithEmailAndPassword(auth,email,password))

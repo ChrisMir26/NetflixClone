@@ -22,33 +22,38 @@ const Navbar = () => {
           NETFLIX
         </h1>
       </Link>
-      {user?.email && user.email ? (
-        <div>
-          <Link to="/account">
-            <button className="text-white pr-4">Account</button>
-          </Link>
+      {user !== undefined && (
+        user ? (
+          <div>
+            <Link to="/account">
+              <button className="text-white pr-4">Account</button>
+            </Link>
 
-          <button
-            className="bg-red-600 px-6 py-2 rounded cursor-pointer text-white"
-            onClick={handleLogOut}
-          >
-            Log out
-          </button>
-        </div>
-      ) : (
-        <div>
-          <Link to="/login">
-            <button className="text-white pr-4">Sign In</button>
-          </Link>
-          <Link to="/signup">
-            <button className="bg-red-600 px-6 py-2 rounded cursor-pointer text-white">
-              Sign up
+            <button
+              className="bg-red-600 px-6 py-2 rounded cursor-pointer text-white"
+              onClick={handleLogOut}
+            >
+              Log out
             </button>
-          </Link>
-        </div>
+          </div>
+        ) : (
+          <div>
+            <Link to="/login">
+              <button className="text-white pr-4">Sign In</button>
+            </Link>
+            <Link to="/signup">
+              <button className="bg-red-600 px-6 py-2 rounded cursor-pointer text-white">
+                Sign up
+              </button>
+            </Link>
+          </div>
+        )
       )}
     </div>
   );
 };
 
 export default Navbar;
+
+
+

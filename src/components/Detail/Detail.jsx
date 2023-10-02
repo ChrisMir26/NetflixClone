@@ -32,7 +32,7 @@ const Detail = () => {
 
 <div className="w-full h-full text-white">
       <div className="w-full h-full">
-        <div className="w-full h-full absolute bg-gradient-to-r from-black"></div>
+        <div className="w-full h-[100vh] absolute bg-gradient-to-r from-black"></div>
         <img
          src={
           isSmallScreen
